@@ -1,0 +1,39 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Next.js app
+      run: npm run build
+
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@v1.0.2
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 10022
+        script: |
+          cd /home/turedureblog/turedureblog.xsrv.jp/public_html/todays-menu-front  # Xserver上のプロジェクトディレクトリに移動
+          git pull origin main
+          npm install
+          npm run build # ここでビルドが必要な場合
+          pm2 restart all # サーバーを再起動して新しいビルドを反映

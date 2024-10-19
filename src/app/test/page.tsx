@@ -4,7 +4,7 @@ import useSWR from 'swr'
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export default function TestPage() {
-  const { data, error } = useSWR('http://localhost:8050/api/test', fetcher)
+  const { data, error } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/test`, fetcher)
 
   if (error) return <div>Failed to load</div>
   if (!data) return <div>Loading...</div>
