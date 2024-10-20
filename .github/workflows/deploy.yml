@@ -33,7 +33,10 @@ jobs:
         port:  ${{ secrets.SSH_PORT }}
         script: |
           cd /home/turedureblog/turedureblog.xsrv.jp/public_html/todays-menu-front  # Xserver上のプロジェクトディレクトリに移動
+          git fetch origin main
+          git reset --hard origin/main
           git pull origin main
           npm install
-          npm run build # ここでビルドが必要な場合
-          pm2 restart all # サーバーを再起動して新しいビルドを反映
+          npm run build
+          npm run start  # Next.js アプリケーションのサーバーを起動
+
